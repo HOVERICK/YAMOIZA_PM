@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주간 영업 실적 대시보드 (JS Ver.)</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Plotly.js CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- PapaParse CDN for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 사이드바: 필터 영역 -->
+        <aside class="sidebar">
+            <h2>🔍 조회 필터</h2>
+            
+            <div class="filter-group">
+                <label for="filter_type"><strong>기간 필터 유형</strong></label>
+                <div class="radio-group" id="filter_type">
+                    <input type="radio" id="all" name="period" value="all" checked>
+                    <label for="all">전체</label>
+                    <input type="radio" id="range" name="period" value="range">
+                    <label for="range">기간</label>
+                    <input type="radio" id="year" name="period" value="year">
+                    <label for="year">연도</label>
+                    <input type="radio" id="month" name="period" value="month">
+                    <label for="month">월</label>
+                </div>
+            </div>
+
+            <div id="date-filters">
+                <!-- 기간 지정 -->
+                <div id="range-filter" class="date-filter-inputs" style="display: none;">
+                    <label for="start-date">시작일</label>
+                    <input type="date" id="start-date">
+                    <label for="end-date">종료일</label>
+                    <input type="date" id="end-date">
+                </div>
+                <!-- 연도 지정 -->
+                <div id="year-filter" class="date-filter-inputs" style="display: none;">
+                    <label for="year-select">연도 선택</label>
+                    <select id="year-select"></select>
+                </div>
+                <!-- 월 지정 -->
+                <div id="month-filter" class="date-filter-inputs" style="display: none;">
+                    <label for="month-year-select">연도 선택</label>
+                    <select id="month-year-select"></select>
+                    <label for="month-select">월 선택</label>
+                    <select id="month-select"></select>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <label for="team-select"><strong>팀 선택</strong></label>
+                <select id="team-select"></select>
+            </div>
+
+            <div class="filter-group">
+                <label for="manager-select"><strong>담당자 선택</strong></label>
+                <select id="manager-select"></select>
+            </div>
+
+            <div class="data-info">
+                <p>📅 데이터 마지막 업데이트: <span id="last-update"></span></p>
+            </div>
+        </aside>
+
+        <!-- 메인 콘텐츠: 대시보드 영역 -->
+        <main class="main-content">
+            <header>
+                <h1>📊 주간 영업 실적 현황</h1>
+                <p>매주 업데이트되는 영업 실적 데이터를 조회합니다.</p>
+            </header>
+
+            <!-- KPI 섹션 -->
+            <section class="kpi-section">
+                <div class="kpi-card">
+                    <h4>조회 기간 총 문의</h4>
+                    <p id="kpi-total-inquiries">0건</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>확정 및 완료</h4>
+                    <p id="kpi-successful-inquiries">0건</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>확정율</h4>
+                    <p id="kpi-confirmation-rate">0.0%</p>
+                </div>
+            </section>
+
+            <!-- 탭 메뉴 -->
+            <div class="tabs">
+                <button class="tab-link active" onclick="openTab(event, 'tab1')">종합 현황</button>
+                <button class="tab-link" onclick="openTab(event, 'tab2')">담당자/팀 분석</button>
+                <button class="tab-link" onclick="openTab(event, 'tab3')">문의 경로 분석</button>
+                <button class="tab-link" onclick="openTab(event, 'tab4')">영업 상태 분석</button>
+            </div>
+
+            <!-- 탭 콘텐츠 -->
+            <div id="tab1" class="tab-content" style="display: block;">
+                <h3>실적 추이</h3>
+                <div id="time-series-chart" class="chart-container"></div>
+            </div>
+
+            <div id="tab2" class="tab-content">
+                <h3>담당자/팀별 실적 상세 분석</h3>
+                <div id="manager-team-chart" class="chart-container"></div>
+            </div>
+
+            <div id="tab3" class="tab-content">
+                <h3>문의 경로별 효율 분석</h3>
+                <div id="source-analysis-chart" class="chart-container"></div>
+            </div>
+
+            <div id="tab4" class="tab-content">
+                <h3>영업 기회 상태 분석</h3>
+                <div id="status-pie-chart" class="chart-container"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
